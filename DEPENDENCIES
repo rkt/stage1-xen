@@ -1,3 +1,7 @@
+Please make sure you have the following installed on your system, they
+are required by stage1-xen:
+
 bash
+busybox static
 jq
 xen tools (xl)
