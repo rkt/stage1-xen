@@ -10,7 +10,7 @@ gargs=""
 ip=""
 gw=""
 route=""
-bridge=""
+bridge="xenbr0"
 
 for i in $*
 do
