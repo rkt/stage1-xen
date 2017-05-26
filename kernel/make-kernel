@@ -1,5 +1,16 @@
 #!/bin/bash
 
+if [[ $ARCH = "x86"  ]]
+then
+    image="bzImage"
+elif [[ $ARCH = "arm64" ]]
+then
+    image="Image.gz"
+elif [[ $ARCH = "arm" ]]
+then
+    image="zImage"
+fi
+
 kernel_stuffdir=`readlink -f kernel`
 kernel_outpath=$kernel_stuffdir/out
 kernel_builddir=$kernel_stuffdir/build
@@ -11,7 +22,7 @@ kernel_tarball="$kernel_name".tar.xz
 kernel_url=https://www.kernel.org/pub/linux/kernel/v4.x/"$kernel_tarball"
 kernel_src_config="$kernel_stuffdir"/cutdown-config
 kernel_patchesdir="$kernel_stuffdir"/patches
-kernel_bzimage="$kernel_builddir"/"$kernel_name"/arch/x86/boot/bzImage
+kernel_image="$kernel_builddir"/"$kernel_name"/arch/"$ARCH"/boot/"$image"
 
 
 rm -rf $kernel_outpath
@@ -33,6 +44,6 @@ then
     cp $kernel_src_config .config
 fi
 cd $kernel_builddir/$kernel_name
-make -j4 bzImage
+make -j4 $image
 
-cp $kernel_bzimage $kernel_out
+cp $kernel_image $kernel_out

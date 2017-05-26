@@ -16,7 +16,6 @@
 
 set -e
 set -o pipefail
-set -o nounset
 
 # Generate the aci image
 if [[ -z "$GOPATH" ]]
@@ -37,6 +36,25 @@ if [ "x${1:-}" != "x" ] && [ "clean" == "$1" ]; then
     rm -f aci/actool
 
     exit 0
+fi
+
+# Support cross-compiling via ARCH variable
+if [[ -z "$ARCH" ]]
+then
+    ARCH=`uname -p`
+fi
+if [[ $ARCH = "x86_64" ]]
+then
+    export ARCH="x86"
+elif [[ $ARCH = "aarch64" ]]
+then
+    export ARCH="arm64"
+elif [[ $ARCH = "arm*" ]]
+then
+    export ARCH="arm"
+else
+    echo Architecture not supported
+    exit 1
 fi
 
 # Build up the target directory and the rootfs
