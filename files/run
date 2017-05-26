@@ -36,8 +36,8 @@ do
 	fi
 done
 
-appname=`cat $stage2m | chroot $stage1 /usr/bin/jq -r '.["apps"][0]["name"]'`
-cmdline=`cat $stage2m | chroot $stage1 /usr/bin/jq  -c -r '.["apps"][0]["app"]["exec"] | join("\" \"")'`
+appname=`cat $stage2m | jq -r '.["apps"][0]["name"]'`
+cmdline=`cat $stage2m | jq  -c -r '.["apps"][0]["app"]["exec"] | join("\" \"")'`
 cmdline="\"$cmdline\""
 stage2=$stage1/opt/stage2/$appname
 
