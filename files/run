@@ -61,7 +61,7 @@ else
 	echo "vif=['bridge=$bridge']" >> $outconfig
 fi
 echo "vfb=['vnc=1']" >> $outconfig
-echo "xen_9pfs=[ 'tag=share_dir,security_model=none,path=$mountpoint' ]" >> $outconfig
+echo "9p=[ 'tag=share_dir,security_model=none,path=$mountpoint' ]" >> $outconfig
 echo extra=\'console=hvc0 root=9p ip=$ip gw=$gw route=$route\' >> $outconfig 
 echo "name=\"$uuid\"" >> $outconfig
 echo $cmdline > $mountpoint/cmdline
