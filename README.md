@@ -13,4 +13,4 @@ This project aims at providing a new stage1 based on the Xen hypervisor. Each [p
 
 ## Build and Output
 
-Make sure to have all the dependencies installed, see [DEPENDENCIES]. Xen needs to be at least version 4.9. Then, execute *build.sh*. The output is the file *stage1-xen.aci*, which is the stage1 ACI image. stage1-xen.aci does not contain any Xen binaries itself, it relies on *xl* being available on the host.
+Make sure to have all the dependencies installed, see [DEPENDENCIES](DEPENDENCIES). Xen needs to be at least version 4.9. Then, execute **build.sh**. The output is the file **stage1-xen.aci**, which is the stage1 ACI image. stage1-xen.aci does not contain any Xen binaries itself, it relies on [xl](https://xenbits.xen.org/docs/unstable/man/xl.1.html) being available on the host.
