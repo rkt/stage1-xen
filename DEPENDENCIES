@@ -4,4 +4,4 @@ are required by stage1-xen:
 bash
 busybox static
 jq
-xen tools (xl)
+xen tools (xl) >= 4.9
