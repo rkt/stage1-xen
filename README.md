@@ -14,3 +14,8 @@ This project aims at providing a new stage1 based on the Xen hypervisor. Each [p
 ## Build and Output
 
 Make sure to have all the dependencies installed, see [DEPENDENCIES](DEPENDENCIES). Xen needs to be at least version 4.9. Then, execute **build.sh**. The output is the file **stage1-xen.aci**, which is the stage1 ACI image. stage1-xen.aci does not contain any Xen binaries itself, it relies on [xl](https://xenbits.xen.org/docs/unstable/man/xl.1.html) being available on the host.
+
+
+## Knows issues
+
+Network integration with rkt is still work in progress. When finished, you'll be able to use the regular rkt networking options with stage1-xen. For now, please create a bridge in Dom0 named *xenbr0*.
