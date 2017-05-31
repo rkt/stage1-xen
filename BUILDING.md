@@ -9,10 +9,13 @@ git clone git://xenbits.xen.org/xen.git
 cd xen
 ./configure --prefix=/usr --with-system-qemu=/usr/lib/xen/bin/qemu-system-i386 --disable-stubdom --disable-qemu-traditional --disable-rombios
 make -j4
-make -j4 install
+make install
+update-rc.d xencommons defaults
 update-grub
 reboot
 ```
+Make sure to select Xen at boot, or edit /boot/grub/grub.cfg to make it the default, changing "set default="0" to point to the appropriate entry below (the one booting xen.gz), which could be entry number "4" for example.
+
 
 ## Building QEMU
 ```
