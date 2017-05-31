@@ -81,6 +81,14 @@ if [ -f stage1-xen.aci ]; then
     rm stage1-xen.aci
 fi
 
+# Build init
+go get github.com/hashicorp/errwrap
+cd init
+glide init || true
+glide up -v 
+cd ..
+go build -o target/rootfs/init init/init.go
+
 # Build actool
 go get github.com/appc/spec/actool
 go build -o ./aci/actool github.com/appc/spec/actool

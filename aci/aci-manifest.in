@@ -15,7 +15,7 @@
     "annotations": [
         {
             "name": "coreos.com/rkt/stage1/run",
-            "value": "/run"
+            "value": "/init"
         },
         {
             "name": "coreos.com/rkt/stage1/enter",
