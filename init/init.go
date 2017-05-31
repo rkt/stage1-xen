@@ -34,7 +34,7 @@ import (
 
 	"github.com/rkt/rkt/common"
 	commonnet "github.com/rkt/rkt/common/networking"
-	"github.com/rkt/rkt/networking"
+	"github.com/sstabellini/rkt/networking"
 	pkgflag "github.com/rkt/rkt/pkg/flag"
 	rktlog "github.com/rkt/rkt/pkg/log"
 	"github.com/rkt/rkt/pkg/sys"
