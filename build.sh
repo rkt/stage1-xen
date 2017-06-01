@@ -25,6 +25,7 @@ then
 fi
 
 execs="enter run stop"
+netplugins="main/ptp main/bridge main/macvlan main/ipvlan ipam/host-local ipam/dhcp meta/flannel meta/tuning"
 
 # Clean the repo, but save the vendor area
 if [ "x${1:-}" != "x" ] && [ "clean" == "$1" ]; then
@@ -88,6 +89,16 @@ glide init || true
 glide up -v 
 cd ..
 go build -o target/rootfs/init init/init.go
+
+# Network plugins
+mkdir -p target/rootfs/usr/lib/rkt/plugins/net
+cd init
+for i in $netplugins
+do
+    go build ./vendor/github.com/containernetworking/cni/plugins/$i
+    mv `echo $i | cut -d / -f 2` ../target/rootfs/usr/lib/rkt/plugins/net
+done
+cd ..
 
 # Build actool
 go get github.com/appc/spec/actool
