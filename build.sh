@@ -100,6 +100,10 @@ do
 done
 cd ..
 
+# Default network configs
+mkdir -p target/rootfs/etc/rkt/net.d
+cp net.d/* target/rootfs/etc/rkt/net.d
+
 # Create flavor and systemd-version
 cd target/rootfs
 rm -f xen
