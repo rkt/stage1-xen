@@ -100,6 +100,13 @@ do
 done
 cd ..
 
+# Create flavor and systemd-version
+cd target/rootfs
+rm -f xen
+ln -s xen flavor || true
+echo 1 > systemd-version
+cd ../..
+
 # Build actool
 go get github.com/appc/spec/actool
 go build -o ./aci/actool github.com/appc/spec/actool
