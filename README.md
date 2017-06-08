@@ -22,12 +22,3 @@ You can use stage1-xen by passing the appropriate --stage1-path option to rkt:
 ```
   rkt run sha512-b1dcf7bfa88f --interactive --insecure-options=image --stage1-path=/home/sstabellini/stage1-xen.aci
 ```
-
-
-## Knows issues
-
-Network integration with rkt is still work in progress. When finished, you'll be able to use the regular rkt networking options with stage1-xen. For now, please create a bridge in Dom0 named *xenbr0*.
-```
-  brctl addbr xenbr0
-  ifconfig xenbr0 192.168.0.1 up
-```
