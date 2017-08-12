@@ -1,0 +1,89 @@
+hash: eb0d5fbb629911862615dfdc4dde5283949af890a06d3ff70662e507385bd14b
+updated: 2017-08-12T09:56:42.779804672Z
+imports:
+- name: github.com/appc/spec
+  version: 210e2995a04148739121566b71b7440512467cc2
+  subpackages:
+  - aci
+  - pkg/device
+  - pkg/tarheader
+  - schema
+  - schema/common
+  - schema/types
+  - schema/types/resource
+- name: github.com/containernetworking/cni
+  version: 5c3c17164270150467498a32c71436c7cd5501be
+  subpackages:
+  - pkg/ip
+  - pkg/ns
+  - pkg/types
+  - pkg/utils
+  - pkg/utils/sysctl
+- name: github.com/coreos/go-iptables
+  version: f2ede9c85e2fac4d72d5a9af0af59c0858d7a3bd
+  subpackages:
+  - iptables
+- name: github.com/coreos/go-semver
+  version: 1817cd4bea52af76542157eeabd74b057d1a199e
+  subpackages:
+  - semver
+- name: github.com/coreos/go-systemd
+  version: d2196463941895ee908e13531a23a39feb9e1243
+  subpackages:
+  - unit
+- name: github.com/d2g/dhcp4
+  version: fcbeb8a548ebd34b55134f2833c5b036a941aa82
+- name: github.com/d2g/dhcp4client
+  version: 8ca8fe2cad1770f068782377ec6be6733c01a96b
+- name: github.com/hashicorp/errwrap
+  version: 7554cd9344cec97297fa6649b055a8c98c2a1e55
+- name: github.com/rkt/rkt
+  version: 142050d1a558ab07f6eeddea55c0f51053a99b05
+  subpackages:
+  - common
+  - common/cgroup
+  - common/cgroup/v1
+  - common/cgroup/v2
+  - common/networking
+  - networking/netinfo
+  - networking/tuntap
+  - pkg/acl
+  - pkg/fileutil
+  - pkg/flag
+  - pkg/fs
+  - pkg/group
+  - pkg/log
+  - pkg/mountinfo
+  - pkg/passwd
+  - pkg/sys
+  - pkg/user
+  - stage1/common
+  - stage1/common/types
+  - stage1/init/common
+- name: github.com/spf13/pflag
+  version: e57e3eeb33f795204c1ca35f56c44f83227c6e66
+- name: github.com/sstabellini/rkt
+  version: 8a57cb8b6682ed8fef054f57efef292781597fde
+  subpackages:
+  - networking
+- name: github.com/syndtr/gocapability
+  version: db04d3cc01c8b54962a58ec7e491717d06cfcc16
+  subpackages:
+  - capability
+- name: github.com/vishvananda/netlink
+  version: f5a6f697a596c788d474984a38a0ac4ba0719e93
+  subpackages:
+  - nl
+- name: github.com/vishvananda/netns
+  version: 86bef332bfc3b59b7624a600bd53009ce91a9829
+- name: go4.org
+  version: 034d17a462f7b2dcd1a4a73553ec5357ff6e6c6e
+  subpackages:
+  - errorutil
+- name: golang.org/x/sys
+  version: e42485b6e20ae7d2304ec72e535b103ed350cc02
+  subpackages:
+  - unix
+- name: gopkg.in/inf.v0
+  version: 3887ee99ecf07df5b447e9b00d9c0b2adaa9f3e4
+testImports: []

@@ -1,0 +1,23 @@
+package: github.com/rkt/stage1-xen/init
+import:
+- package: github.com/appc/spec
+  subpackages:
+  - schema/types
+- package: github.com/hashicorp/errwrap
+- package: github.com/rkt/rkt
+  subpackages:
+  - common
+  - common/networking
+  - pkg/flag
+  - pkg/log
+  - pkg/sys
+  - stage1/common
+  - stage1/common/types
+  - stage1/init/common
+- package: github.com/sstabellini/rkt
+  subpackages:
+  - networking
+- package: github.com/containernetworking/cni
+  version: 0.3.0
+- package: github.com/d2g/dhcp4
+- package: github.com/d2g/dhcp4client
