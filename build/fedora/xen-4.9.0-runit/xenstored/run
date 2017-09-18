@@ -1,0 +1,23 @@
+#!/bin/bash
+
+set -e
+
+[ ! -d /var/run/xen ] && mkdir -p /var/run/xen
+[ ! -d /var/run/xenstored ] && mkdir -p /var/run/xenstored
+[ ! -d /var/log/xen ] && mkdir -p /var/log/xen
+[ ! -d /var/lib/xen ] && mkdir -p /var/lib/xen
+[ ! -d /var/lib/xen/dump ] && mkdir -p /var/lib/xen/dump
+[ ! -d /var/lib/xen/xenpaging ] && mkdir -p /var/lib/xen/paging
+[ ! -d /var/lib/xenstored ] && mkdir -p /var/lib/xenstored
+modprobe -q xen-evtchn || exit 1
+modprobe -q xen-gntdev || exit 1
+modprobe -q xen-gntalloc || exit 1
+mountpoint -q /proc/xen || mount -t xenfs xenfs /proc/xen
+mountpoint -q /var/lib/xenstored || mount -t tmpfs xenstored /var/lib/xenstored
+grep -q "control_d" /proc/xen/capabilities || exit 1
+
+# In case of failure, allow user to run teardown script
+sleep 5s
+
+# Use `--trace-file /var/log/xen/xenstored-trace.log` for logs
+exec /opt/xen-4.9.0/sbin/xenstored --no-fork

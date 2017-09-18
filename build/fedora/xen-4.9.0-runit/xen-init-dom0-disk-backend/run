@@ -1,0 +1,11 @@
+#!/bin/bash
+
+set -e
+
+sv check xenstored >/dev/null || exit 1
+sv check xenconsoled >/dev/null || exit 1
+
+# In case of failure, allow user to run teardown script
+sleep 5s
+
+exec /opt/xen-4.9.0/lib/xen/bin/qemu-system-i386 -xen-domid 0 -xen-attach -name dom0 -nographic -M xenpv -monitor /dev/null -serial /dev/null -parallel /dev/null -nodefaults -no-user-config

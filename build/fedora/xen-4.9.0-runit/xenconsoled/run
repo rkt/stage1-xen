@@ -1,0 +1,13 @@
+#!/bin/bash
+
+set -e
+
+sv check xen-init-dom0 >/dev/null || exit 1
+
+[ ! -d /var/log/xen/console ] && mkdir -p /var/log/xen/console
+
+# In case of failure, allow user to run teardown script
+sleep 5s
+
+# --log=[none|guest|hv|all]
+exec /opt/xen-4.9.0/sbin/xenconsoled -i --log=none

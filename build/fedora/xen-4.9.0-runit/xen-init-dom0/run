@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -e
+
+sv check xenstored >/dev/null || exit 1
+
+/opt/xen-4.9.0/lib/xen/bin/xen-init-dom0
+
+exec chpst -b xen-init-dom0 runit-pause
