@@ -13,6 +13,7 @@ Stage1s come in the form of [ACI](https://github.com/appc/spec) images, and they
 ```
 This project aims at providing a new stage1 based on the Xen hypervisor. Each [pod](https://coreos.com/rkt/docs/latest/subcommands/run.html#run-multiple-applications-in-the-same-pod) (a small set of contained applications) is run in a separated Xen virtual machine. On x86 PV and PVH virtual machines are used, depending on the availability of hardware virtualization support.
 
+**Note:** stage1-xen is under active development. We encourage you to try stage1-xen and give us your feedback. However unlike upstream [Xen Project](https://wiki.xenproject.org/wiki/Xen_Project_Release_Features), we are still in _preview_ phase. So please do not expect _long term support_ or _backward compatibility_ as yet.
 
 ## Build and Output
 
