@@ -1,0 +1,21 @@
+version: 2
+jobs:
+  build:
+    working_directory: /root
+    docker:
+      - image: lambdalinuxfedora/stage1-xen-fedora-buildroot:1709190549
+        command: /sbin/my_init
+    steps:
+      - run:
+          # We create `stage1-xen` directory in Dockerfile for local dev
+          # environment. Removing it here so CircleCI checkout step can work
+          # correctly
+          name: Removing stage1-xen directory from GOPATH...
+          command: |
+            rm -rf /root/gopath/src/github.com/rkt/stage1-xen
+      - checkout:
+          path: /root/gopath/src/github.com/rkt/stage1-xen
+      - run:
+          name: Starting run...
+          command: |
+            /root/bin/run
