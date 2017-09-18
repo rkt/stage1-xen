@@ -1,0 +1,113 @@
+# tarballs checksum
+# -----------------
+# 974b3091232d781c4fc410ccca98fb62ba9febe9e6a988e348804483c4f66742  binutils-2.26.1-1.1.fc25.tar
+
+FROM lambdalinuxfedora/baseimage-fedora
+
+CMD ["/sbin/my_init"]
+
+COPY [ \
+  "./binutils-2.26.1-1.1.fc25.tar", \
+  \
+  "./components/*", \
+  "./run", \
+  "/tmp/docker-build/" \
+]
+
+RUN \
+  # dnf
+  echo "Running dnf update..." && \
+  dnf update -y && \
+  dnf install -y less && \
+  dnf install -y sudo && \
+  \
+  # circleci container requirements
+  # https://circleci.com/docs/2.0/custom-images/#adding-required-and-custom-tools-or-files
+  dnf install -y git && \
+  dnf install -y openssh-clients && \
+  dnf install -y tar && \
+  dnf install -y gzip && \
+  dnf install -y ca-certificates && \
+  \
+  # install `binutils`
+  pushd /tmp/docker-build && \
+    # verify checksum
+    echo "974b3091232d781c4fc410ccca98fb62ba9febe9e6a988e348804483c4f66742  binutils-2.26.1-1.1.fc25.tar" | sha256sum -c - && \
+    tar xvf binutils-2.26.1-1.1.fc25.tar && \
+    dnf install -y ./binutils/2.26.1/1.1.fc25/x86_64/binutils-2.26.1-1.1.fc25.x86_64.rpm && \
+  popd && \
+  \
+  dnf install -y @buildsys-build && \
+  \
+  # Having `ipdb` around is useful when debugging `run` script. Uncomment this
+  # section as required
+  # dnf install -y python2-devel && \
+  # dnf install -y python-pip && \
+  # su -l root -c "pip2 install --user ipdb==0.8 ipython==5.3.0" && \
+  \
+  # Note: xen and qemu has some duplicate package dependencies. We are
+  # explicitly calling out dependencies for xen and qemu
+  #
+  # xen build dependencies
+  dnf install -y bridge-utils && \
+  dnf install -y gettext && \
+  dnf install -y glib2-devel && \
+  dnf install -y glibc-devel.i686 && \
+  dnf install -y grub2 && \
+  dnf install -y iasl && \
+  dnf install -y libaio-devel && \
+  dnf install -y libuuid-devel && \
+  dnf install -y ncurses-devel && \
+  dnf install -y openssl-devel && \
+  dnf install -y pixman-devel && \
+  dnf install -y python2-devel && \
+  dnf install -y wget && \
+  dnf install -y yajl-devel && \
+  \
+  # qemu build dependencies
+  dnf install -y glib2-devel && \
+  dnf install -y libaio-devel && \
+  dnf install -y libattr-devel && \
+  dnf install -y libcap-devel && \
+  dnf install -y libcap-ng-devel && \
+  dnf install -y pixman-devel && \
+  dnf install -y zlib-devel && \
+  \
+  # rkt build dependencies
+  dnf install -y autoconf && \
+  dnf install -y automake && \
+  dnf install -y git && \
+  dnf install -y glibc-static && \
+  dnf install -y gnupg && \
+  dnf install -y golang && \
+  dnf install -y libacl-devel && \
+  dnf install -y squashfs-tools && \
+  dnf install -y systemd-devel && \
+  dnf install -y wget && \
+  \
+  # stage1-xen build dependencies
+  dnf install -y bc && \
+  dnf install -y busybox && \
+  dnf install -y glide && \
+  dnf install -y golang && \
+  dnf install -y jq && \
+  dnf install -y libacl-devel && \
+  dnf install -y wget && \
+  \
+  # copy `run` file and `components/{qemu,rkt,xen}`
+  su -l root -c "mkdir /root/bin" && \
+  su -l root -c "cp /tmp/docker-build/run /root/bin" && \
+  su -l root -c "mkdir /root/bin/components" && \
+  su -l root -c "cp /tmp/docker-build/qemu /root/bin/components" && \
+  su -l root -c "cp /tmp/docker-build/rkt /root/bin/components" && \
+  su -l root -c "cp /tmp/docker-build/xen /root/bin/components" && \
+  \
+  # create `stage1-xen` directory
+  mkdir -p /root/gopath/src/github.com/rkt/stage1-xen && \
+  \
+  # cleanup
+  rm -rf /tmp/docker-build && \
+  dnf clean all && \
+  rm -rf /var/cache/dnf/* && \
+  rm -rf /tmp/* && \
+  rm -rf /var/tmp/*
