@@ -1,0 +1,47 @@
+#!/usr/bin/python2
+
+import shlex
+import subprocess
+import sys
+import os
+
+# Modify this if you would like to install Xen elsewhere on your filesystem or
+# a different version of Xen
+XEN_PREFIX = '/opt/xen-4.9.0'
+# This can be a git tag or branch
+XEN_BRANCH = 'RELEASE-4.9.0'
+
+
+# helper function to capture stdout from a long running process
+def subprocess_stdout(cmd, cwd, env):
+    p = subprocess.Popen(
+        shlex.split(cmd), cwd=cwd, env=env, stdout=subprocess.PIPE)
+    while p.poll() is None:
+        l = p.stdout.readline()
+        sys.stdout.write(l)
+    if p.returncode != 0:
+        sys.exit(1)
+
+
+env = os.environ.copy()
+
+# build and install xen
+print "Cloning xen..."
+cmd = "git clone --branch %(branch)s git://xenbits.xen.org/xen.git" % {
+    'branch': XEN_BRANCH
+}
+subprocess.check_output(shlex.split(cmd), cwd='/root')
+
+steps = [
+    "./configure --prefix=%(prefix)s --with-system-qemu=%(prefix)s/lib/xen/bin/qemu-system-i386 --disable-stubdom --disable-qemu-traditional --disable-rombios --sysconfdir=%(prefix)s/etc --enable-rpath --disable-systemd"
+    % {
+        'prefix': XEN_PREFIX
+    }, 'make',
+    "make install BOOT_DIR=%(prefix)s/boot DEBUG_DIR=%(prefix)s/lib/debug EFI_DIR=%(prefix)s/boot/efi/EFI/xen"
+    % {
+        'prefix': XEN_PREFIX
+    }
+]
+for cmd in steps:
+    cwd = '/root/xen'
+    subprocess_stdout(cmd, cwd, env)

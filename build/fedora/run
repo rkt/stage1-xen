@@ -1,0 +1,56 @@
+#!/usr/bin/python2
+
+import shlex
+import subprocess
+import sys
+import os
+
+# This scripts calls out to `xen`, `qemu` and `rkt` scripts in the
+# `components/` directory within a container. It is expected that components
+# directory is present at the same directory level as run script.
+STAGE1_XEN_COMPONENTS = ['xen', 'qemu', 'rkt']
+
+
+# helper function to capture stdout from a long running process
+def subprocess_stdout(cmd, cwd, env):
+    p = subprocess.Popen(
+        shlex.split(cmd), cwd=cwd, env=env, stdout=subprocess.PIPE)
+    while p.poll() is None:
+        l = p.stdout.readline()
+        sys.stdout.write(l)
+    if p.returncode != 0:
+        sys.exit(1)
+
+
+env = os.environ.copy()
+
+dirname = os.path.dirname(os.path.realpath(__file__))
+steps = [os.path.join(dirname, 'components', x) for x in STAGE1_XEN_COMPONENTS]
+for cmd in steps:
+    cwd = '/root'
+    subprocess_stdout(cmd, cwd, env)
+
+# build stage1-xen
+env['GOPATH'] = '/root/gopath'
+cwd = '/root/gopath/src/github.com/rkt/stage1-xen'
+cmd = 'bash build.sh'
+subprocess_stdout(cmd, cwd, env)
+
+# install build artifacts to `/opt/stage1-xen/aci` and create a tarball
+steps = [
+    'mkdir -p /opt/stage1-xen/aci',
+    'cp /root/gopath/src/github.com/rkt/stage1-xen/stage1-xen.aci /opt/stage1-xen/aci/stage1-xen.aci',
+    'cp /root/gopath/src/github.com/rkt/stage1-xen/build/fedora/source_path.sh /opt/stage1-xen/bin/source_path.sh',
+    'cp -r /root/gopath/src/github.com/rkt/stage1-xen/build/fedora/xen-4.9.0-runit /opt/xen-4.9.0-runit'
+]
+for cmd in steps:
+    cwd = '/root'
+    subprocess_stdout(cmd, cwd, env)
+
+cwd = '/opt'
+cmd = 'tar zcvf /root/stage1-xen-build.tar.gz qemu-2.10.0/ stage1-xen/ xen-4.9.0/ xen-4.9.0-runit/'
+subprocess_stdout(cmd, cwd, env)
+
+cwd = '/root'
+cmd = 'mv /root/stage1-xen-build.tar.gz /tmp'
+subprocess_stdout(cmd, cwd, env)

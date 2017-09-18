@@ -1,0 +1,59 @@
+#!/usr/bin/python2
+
+import shlex
+import subprocess
+import sys
+import os
+
+# `rkt` is installed in the same prefix as `stage1-xen`. Modify this if you
+# would like to install rkt elsewhere on your filesystem.
+STAGE1_XEN_PREFIX = '/opt/stage1-xen'
+RKT_PREFIX = STAGE1_XEN_PREFIX
+# This can be a git tag or branch
+RKT_BRANCH = 'v1.28.1'
+
+# Adjust this according to what RKT_BRANCH generates (see configure.ac)
+RKT_BUILD_VER = 'rkt-1.28.1'
+
+
+# helper function to capture stdout from a long running process
+def subprocess_stdout(cmd, cwd, env):
+    p = subprocess.Popen(
+        shlex.split(cmd), cwd=cwd, env=env, stdout=subprocess.PIPE)
+    while p.poll() is None:
+        l = p.stdout.readline()
+        sys.stdout.write(l)
+    if p.returncode != 0:
+        sys.exi(1)
+
+
+env = os.environ.copy()
+
+# build rkt
+print "Cloning rkt..."
+cmd = "git clone --branch %(branch)s https://github.com/rkt/rkt.git" % {
+    'branch': RKT_BRANCH
+}
+subprocess.check_output(shlex.split(cmd), cwd='/root')
+
+steps = [
+    './autogen.sh', './configure --disable-tpm --with-stage1-flavors=coreos',
+    'make'
+]
+for cmd in steps:
+    cwd = '/root/rkt'
+    subprocess_stdout(cmd, cwd, env)
+
+# install rkt build artifacts to RKT_PREFIX
+steps = [
+    "mkdir -p %(prefix)s/bin" % {
+        'prefix': RKT_PREFIX
+    },
+    "cp /root/rkt/build-%(build_ver)s/target/bin/rkt %(prefix)s/bin/rkt" % {
+        'build_ver': RKT_BUILD_VER,
+        'prefix': RKT_PREFIX
+    }
+]
+for cmd in steps:
+    cwd = '/root/rkt'
+    subprocess_stdout(cmd, cwd, env)

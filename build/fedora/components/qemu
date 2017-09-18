@@ -1,0 +1,52 @@
+#!/usr/bin/python2
+
+import shlex
+import subprocess
+import sys
+import os
+
+# Modify this if you would like to install Qemu elsewhere on your filesystem or
+# a different version of Qemu
+QEMU_PREFIX = '/opt/qemu-2.10.0'
+# This can be a git tag or branch
+QEMU_BRANCH = 'v2.10.0'
+
+# This should correspond to your Xen install prefix
+XEN_PREFIX = '/opt/xen-4.9.0'
+
+
+# helper function to capture stdout from a long running process
+def subprocess_stdout(cmd, cwd, env):
+    p = subprocess.Popen(
+        shlex.split(cmd), cwd=cwd, env=env, stdout=subprocess.PIPE)
+    while p.poll() is None:
+        l = p.stdout.readline()
+        sys.stdout.write(l)
+    if p.returncode != 0:
+        sys.exit(1)
+
+
+env = os.environ.copy()
+
+# build and install qemu
+print "Cloning qemu..."
+cmd = "git clone --branch %(branch)s git://git.qemu.org/qemu.git" % {
+    'branch': QEMU_BRANCH
+}
+subprocess.check_output(shlex.split(cmd), cwd='/root')
+
+steps = [
+    "./configure --prefix=%(qemu_prefix)s --enable-xen --target-list=i386-softmmu --extra-cflags=\"-I%(xen_prefix)s/include\" --extra-ldflags=\"-L%(xen_prefix)s/lib -Wl,-rpath,%(xen_prefix)s/lib\" --disable-kvm --enable-virtfs --enable-linux-aio"
+    % {
+        'qemu_prefix': QEMU_PREFIX,
+        'xen_prefix': XEN_PREFIX
+    }, 'make', 'make install'
+]
+for cmd in steps:
+    cwd = '/root/qemu'
+    subprocess_stdout(cmd, cwd, env)
+
+cmd = "cp i386-softmmu/qemu-system-i386 %(xen_prefix)s/lib/xen/bin/qemu-system-i386" % {
+    'xen_prefix': XEN_PREFIX
+}
+subprocess.check_output(shlex.split(cmd), cwd='/root/qemu')
