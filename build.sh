@@ -42,21 +42,22 @@ fi
 # Support cross-compiling via ARCH variable
 if [[ -z "$ARCH" ]]
 then
-    ARCH=`uname -p`
+    ARCH=`uname -m`
 fi
 if [[ $ARCH = "x86_64" ]]
 then
-    export ARCH="x86"
+    ARCH="x86"
 elif [[ $ARCH = "aarch64" ]]
 then
-    export ARCH="arm64"
+    ARCH="arm64"
 elif [[ $ARCH = "arm*" ]]
 then
-    export ARCH="arm"
+    ARCH="arm"
 else
     echo Architecture not supported
     exit 1
 fi
+export ARCH
 
 # Build up the target directory and the rootfs
 if [ ! -d target ]; then
