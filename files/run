@@ -10,6 +10,7 @@ gargs=""
 ip=""
 gw=""
 route=""
+pvcalls=0
 bridge="xenbr0"
 
 for i in $*
@@ -18,6 +19,10 @@ do
     then
         gargs="-c"
     fi
+	if [ $i = "pvcalls" ]
+	then
+		pvcalls=1
+	fi
 	if [[ $i = "ip="* ]]
 	then
 		ip=${i#ip=}
@@ -54,15 +59,21 @@ echo "memory = 1024" >> $outconfig
 echo "vcpus = 2" >> $outconfig
 echo "serial='pty'" >> $outconfig
 echo "boot='c'" >> $outconfig
-if test $bridge = "vif"
+if test $pvcalls -eq 0
 then
-	echo "vif=['script=vif-nat,ip=$ip']" >> $outconfig
+	if test $bridge = "vif"
+	then
+		echo "vif=['script=vif-nat,ip=$ip']" >> $outconfig
+	else
+		echo "vif=['bridge=$bridge']" >> $outconfig
+	fi
+	echo extra=\'console=hvc0 root=9p ip=$ip gw=$gw route=$route\' >> $outconfig 
 else
-	echo "vif=['bridge=$bridge']" >> $outconfig
+	echo "pvcalls=['']" >> $outconfig
+	echo extra=\'console=hvc0 root=9p pvcalls=1\' >> $outconfig 
 fi
 echo "vfb=['vnc=1']" >> $outconfig
 echo "p9=[ 'tag=share_dir,security_model=none,path=$mountpoint' ]" >> $outconfig
-echo extra=\'console=hvc0 root=9p ip=$ip gw=$gw route=$route\' >> $outconfig 
 echo "name=\"$uuid\"" >> $outconfig
 echo $cmdline > $mountpoint/cmdline
 xl create $gargs $workpath/out/test.0

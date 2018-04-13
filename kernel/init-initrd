@@ -38,7 +38,13 @@ mount -o bind /proc /mnt/rootfs/proc
 ip=`cat /proc/cmdline | grep -o '\bip=[^ ]*' | cut -d = -f 2`
 gw=`cat /proc/cmdline | grep -o '\bgw=[^ ]*' | cut -d = -f 2`
 route=`cat /proc/cmdline | grep -o '\broute=[^ ]*' | cut -d = -f 2`
-if test "$ip"
+pvcalls=`cat /proc/cmdline | grep  'pvcalls=1'`
+if test "$pvcalls"
+then
+		mkdir -p /mnt/rootfs/etc
+		echo "nameserver 8.8.8.8" > /mnt/rootfs/etc/resolv.conf
+		echo "options use-vc" >> /mnt/rootfs/etc/resolv.conf
+elif test "$ip"
 then
 	# ipv4
 	if [ "$ip" != "${ip#*[0-9].[0-9]}" ]

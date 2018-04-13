@@ -113,18 +113,22 @@ func getArgsEnv(p *stage1commontypes.Pod, flavor string, debug bool, n *networki
 		if p.Interactive {
 			args = append(args, "--interactive")
 		}
-		for _, nd := range n.GetActiveNetworks() {
-			args = append(args, fmt.Sprintf("ip=%s bridge=%s", nd.GuestIP(), nd.IfName()))
+		if n == nil {
+				args = append(args, fmt.Sprintf("pvcalls"))
+		} else {
+			for _, nd := range n.GetActiveNetworks() {
+				args = append(args, fmt.Sprintf("ip=%s bridge=%s", nd.GuestIP(), nd.IfName()))
 
-			for _, route := range nd.Routes() {
-				gw := route.GW
-				if gw == nil {
-					gw = nd.Gateway()
+				for _, route := range nd.Routes() {
+					gw := route.GW
+					if gw == nil {
+						gw = nd.Gateway()
+					}
+
+					args = append(args, fmt.Sprintf("route=%s gw=%s", route.Dst.String(), gw.String()))
 				}
-
-				args = append(args, fmt.Sprintf("route=%s gw=%s", route.Dst.String(), gw.String()))
+				break
 			}
-			break
 		}
 		args = append(args, p.UUID.String())
 		return args, env, nil
